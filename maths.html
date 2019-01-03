@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Maths Romane</title>
+  <style>
+    .box {
+  	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  	border-radius: 2px;
+  	border: 1px solid #666;
+  	background-color:#fff;
+  	margin: 1%;
+  	padding:1%;
+    }
+    .question {font-size:6em;}
+    .nb{color:#f00;font-weight:bold;}
+    .reponse{
+        color:#633;
+        font-size:5em;
+        margin-right:10px;
+        margin-bottom:10px;
+        min-width:1.3em;
+    }
+    .collector {position:absolute}
+    .reward {width:10%}
+
+    #rewards {
+        font-size: 64px;
+        font-weight: 800;
+        text-shadow: 2px 2px #333;
+        color: #FF851B;
+        text-align:center;
+        vertical-align:middle;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track{
+        height: 8px;
+  	cursor: pointer;
+  	background: #3071a9;
+    }
+    input[type=range]::-moz-range-track {
+        height: 8px;
+  	cursor: pointer;
+  	background: #3071a9;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+  	margin-top: -5px;
+    }
+    input[type=range]::-moz-range-thumb {
+        margin-top: -5px;
+    }
+
+  </style>
+  <script src="js/jquery-3.3.1.min.js"></script>
+ </head>
+
+ <body style="background-color:#ddd;font-family:Arial;">
+  <a href="index.html" style="font-size:6em;color:black;text-decoration:none">⬅</a>
+  <div style="height:100%;width:100%;text-align:center;">
+   <div class="box question">
+    Combien font <span class="nb" id="n1"></span>&nbsp;+&nbsp;<span class="nb" id="n2"></span> ? <input id="lire" type='button' style="font-size:50%" value='🔊' />
+   </div>
+   <div class="box" style="margin-top:50px" id="choix"></div>
+   <div id="rewards"></div>
+   <div id="stats" style="font-size:1em;margin-top:50px">
+    Bonnes réponses / Total / Essais :<br>
+    <span id="nb_bonnes_rep">0</span> /
+    <span id="total">0</span> /
+    <span id="nb_rep">0</span>
+    (<span id="pourcent">0</span>%)
+    <div> Difficulté : 2 <input class="range" type="range" min="2" max="10" id="max" value="5"> 10 </div>
+   </div>
+  </div>
+  <script type="text/javascript">
+var n1, n2;
+var theme = "totoro";
+var synth = window.speechSynthesis;
+
+var speak = function(text) {
+    synth.speak(new SpeechSynthesisUtterance(text));
+};
+
+var nombres_mais_pas = function (maxi, pas_n1, pas_n2) {
+    var prop1 = Math.floor(Math.random() * maxi + 1);
+    var prop2 = Math.floor(Math.random() * maxi + 1);
+    if ((prop1 == pas_n1) && (prop2 == pas_n2)) {
+        return nombres_mais_pas (maxi, pas_n1, pas_n2);
+    } else {
+        return [prop1, prop2]
+    }
+};
+
+var run = function() {
+    var max = parseInt($("#max").val(), 10);
+    var nombres = nombres_mais_pas(max, n1, n2);
+    n1 = nombres[0]; $("#n1").text(n1);
+    n2 = nombres[1]; $("#n2").text(n2);
+    $("#total").text(max*4);
+
+    $("#choix").empty();
+    for (var i = 0; i<=(max+max); i++) {
+    	$("#choix").append("<button class='reponse' id='" + i +"''>" + i + "</button>");
+    }
+    $("#lire").click();
+};
+
+var post_actions = function () {
+    var nb_rep = parseInt($("#nb_rep").text(), 10) + 1;
+    $("#nb_rep").text(nb_rep);
+    $("#pourcent").text(Math.floor($("#nb_bonnes_rep").text()*100 / nb_rep));
+};
+
+var desactive = function (bouton) {
+    bouton.attr("disabled", "disabled").css("color", "#fdd");
+}
+
+var collector = function(phase) {
+    var img = ('<img class="collector" src="images/themes/' + theme + '/' + phase + 'collector.gif" alt="collector">');
+    var collector = $(img);
+    $("#rewards").prepend(collector);
+    $("#stats").hide();
+    $(".box").slideUp();
+    collector.css("left", "0px");
+    setTimeout(function () {
+        collector_anim(phase, collector, $(".reward"), 0);
+    }, 200);
+};
+
+var collector_anim = function(phase, collector, rewards, index) {
+    if (index < rewards.length) {
+        var current = $(rewards[index]);
+        var dest = Math.floor(current.position().left - current.width());
+        var dest_str = dest.toString() + 'px';
+        collector.animate({left:dest_str}, 1000,
+                           function () {
+                               current.css("visibility", "hidden");
+                               collector_anim(phase, collector, rewards, index+1)
+                           });
+    } else {
+        collector.animate({left: "100%"}, 1000,
+                          function () {
+                              $("#rewards").empty();
+                              $("#stats").show();
+                              if (phase == "last") {
+                                  $("#rewards").text("Finished !");
+                              } else {
+                                  $(".box").show();
+                              }
+                          });
+    }
+};
+
+var bonne_reponse = function () {
+    var good_jobs = ["Bonne réponse !",
+                     "Super !",
+                     "Oui, bravo !",
+                     "Eh oui, tu as raison !"];
+    var nb_bonnes_rep = parseInt($("#nb_bonnes_rep").text(), 10) + 1;
+    var rep_idx = Math.floor(Math.random() * good_jobs.length + 1);
+    speak(good_jobs[rep_idx]);
+    $("#nb_bonnes_rep").text(nb_bonnes_rep);
+    if (((nb_bonnes_rep % 4) == 0) && (nb_bonnes_rep > 0)) {
+        var fin = (nb_bonnes_rep == $("#total").text());
+        if (fin) {
+            collector("last");
+        }
+        else {
+            collector("");
+        }
+    } else {
+        var reward =
+            '<img class="reward" src="images/themes/' + theme +
+            '/reward.png" alt="recompense">';
+        $("#rewards").append(reward);
+    }
+    post_actions();
+    run();
+};
+
+$("#lire").on("click", function() {
+    speak($(".question").text());
+});
+
+$("#max").on("change", function() {
+    $(".box").show();
+    $("#rewards").empty();
+    $("#nb_bonnes_rep").text("0");
+    $("#nb_rep").text("0");
+    run();
+})
+
+$("body").on("click", ".reponse", function () {
+    var reponse=$(this).attr("id");
+    var attendue = n1 + n2;
+
+    if (reponse == attendue) {
+        bonne_reponse();
+    } else {
+        if (reponse < attendue) {
+            speak("Ah non ! " + n1 + " + " + n2 + " font plus que " + reponse + ", essaie encore !");
+            desactive($(this));
+            post_actions();
+        } else {
+            speak("Ah non ! " + n1 + " + " + n2 + " font moins que " + reponse + ", essaie encore !");
+            desactive($(this));
+            post_actions();
+        }
+    }
+});
+
+run();
+
+  </script>
+ </body>
+</html>
+
