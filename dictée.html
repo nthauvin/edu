@@ -1,0 +1,177 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+     <link rel="icon" href="images/Icon.png" />
+    <title>Dictée Romane</title>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <style type="text/css">
+    .box {
+  	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  	border-radius: 2px;
+  	border: 1px solid #666;
+  	background-color:#fff;
+  	margin: 1%;
+  	padding:1%;
+  }
+  .menu{font-size:1.5em;}
+  .nomdictee{font-size:1.5em;}
+  .saisie{font-size:2em;}
+  .question {font-size:6em;}
+  .letxte{visibility: hidden; font-size: 0px;}
+  .valider{}
+  .nb{color:#f00;font-weight:bold;}
+  .reponse{color:#633;font-size:5em;margin-right:10px;margin-bottom:10px; min-width:1.3em;}
+  .gauche{
+display: flex;
+  	justify-content: flex-end;}
+    </style>
+ </head>
+ <body>
+ 	<a href="Index.html"><img src="images/retour.png" width="200"></a>
+ 	<div class="box menu">
+ 		Veuillez insérez votre nombre de mots/phrases et vos mots/phrases avec entre chaque des retours à la ligne dans les zones de textes ci-desous et validez avec le bouton vert
+ 	</div>
+ 	<div class="box" id="choix">
+ 		<p>Charger une dictée (facultatif) &#9888; tout contenu non sauvegardé sera supprimé !</p>
+ 		<img src="images/charger.png" onclick="javascript:load();" style="cursor:pointer;" height="100px"><span><img src="images/charger_nom.png" onclick="javascript:load_nom();" style="cursor:pointer;" height="100px"></span><span><TEXTAREA name="load" id="namedicte"  style="FONT-SIZE: 20px; FONT-FAMILY: Arial" rows=1 cols=40></TEXTAREA></span>
+ 	</div>
+ 	<div class="box" id="choix">
+ 		<p>Selectionner la génération de votre dictée: (si les mots seront dans l'ordre ou pas)</p>
+
+<div>
+  <input type="radio" id="random" name="choix" value="random" checked>
+  <label for="random">Aléatoire</label>
+</div>
+
+<div>
+  <input type="radio" id="order" name="choix" value="order">
+  <label for="order">Dans l'ordre</label>
+</div>
+
+ </div>
+ <div class="box" id="nomdictee">
+ 		<p>Donnez un nom à votre dictée: (c'est celui qu'on utilisera pour charger n'importe quelle dictée)</p>
+ 		<span><TEXTAREA name="dictee" id="namedictee"  style="FONT-SIZE: 20px; FONT-FAMILY: Arial" rows=1 cols=60></TEXTAREA></span>
+ 	</div>
+ <div class="box" id="nb">
+	<p>Selectionner le nombre de mots/phrases votre dictée et valider avec le bouton vert: (facultatif, c'es seulement pour y voir plus clair) </p>
+	<TEXTAREA name="taille" id="taille" style="FONT-SIZE: 20px; FONT-FAMILY: Arial" rows=1 cols=3></TEXTAREA>  <span><input id="validertaille" type='button' style="font-size:100%" value='✅' /></span>
+</div>
+ 	<div class="box saisie" id="contour">
+ 		<p>Écrivez vots mots ici:</p>
+ 		<span><TEXTAREA name="dictee" id="dictee"  style="FONT-SIZE: 20px; FONT-FAMILY: Arial" rows=1 cols=100></TEXTAREA></span>
+ 	</div>
+ 	
+	<span class="gauche"><img src="images/valider.png" onclick="javascript:validerdictee();" style="cursor: pointer;" height="100px"></span>
+	<a href="Index.html"><img src="images/retour.png" width="200"></a>
+	<span class="letxte" id="texte"></span>
+ <script type="text/javascript">
+ 	var taille;
+ 	var red;
+ 	var texte;
+ 	var textefinal;
+ 	var nom;
+ 	function get(objet){
+ 		localStorage.getItem("objet");
+ 	}
+ 	function load(){
+ 		$("#contour").css("background-color", "white");
+ 		texte = localStorage.getItem("dic");
+ 		nouveau = texte.split('\n');
+ 		nom = localStorage.getItem("name");
+ 		(document.getElementById('namedictee').value = nom);
+ 		ordre = nouveau[0];
+ 		if (ordre == "aleatoire"){
+    				texteaffiche = texte.substr(10);
+    				$("#random").prop("checked", true);
+    			} else {
+    				texteaffiche = texte.substr(6);
+    				$("#order").prop("checked", true);
+    	}
+    	nouveau = texteaffiche.split('\n');
+ 		taille = nouveau.length;
+ 		$("#dictee").attr("rows",taille);
+ 		(document.getElementById('dictee').value = texteaffiche);
+ 		
+
+ 	}
+ 	function load_nom(){
+ 		$("#contour").css("background-color", "white");
+ 		texte2 = (document.getElementById('namedicte').value);
+ 		texte = localStorage.getItem(texte2);
+ 		if (texte == null){
+ 			alert("La dictée " + texte2 + " est inexitante ou n'a pu être chargé.");
+ 			(document.getElementById('namedicte').value = "");
+ 		} else {
+ 		nouveau = texte.split('\n');
+ 		ordre = nouveau[0];
+ 		if (ordre == "aleatoire"){
+    				texteaffiche = texte.substr(10);
+    				$("#random").prop("checked", true);
+    			} else {
+    				texteaffiche = texte.substr(6);
+    				$("#order").prop("checked", true);
+    	}
+    	nouveau = texteaffiche.split('\n');
+ 		taille = nouveau.length;
+ 		$("#dictee").attr("rows",taille);
+ 		nom_load = (document.getElementById('namedicte').value);
+ 		(document.getElementById('namedictee').value = nom_load);
+ 		(document.getElementById('namedicte').value = "");
+ 		(document.getElementById('dictee').value = texteaffiche);
+ 	}
+
+ 	}
+ 	function coche_decoche() {
+ 		if($("#random").is(':checked')) {
+      		localStorage.setItem("order", "aleatoire");
+    	} else {
+    		localStorage.setItem("order", "ordre");
+    	}
+ 	};
+ 	var validertaille = function(){
+ 		taille = $("#taille").val();
+    	$("#dictee").attr("rows",taille);
+    	};
+ 		$("#validertaille").on("click", validertaille);
+   
+ var validerdictee = function(){
+ 		coche_decoche();
+ 		red = "#A52A2A";
+ 		green = "#008000";
+    	texte = (document.getElementById('dictee').value);
+    	taille = (document.getElementById('taille').value);
+    	name = (document.getElementById('namedictee').value);
+    	if (name == ""){
+    		alert("Vous devez donner un nom à la dictée");
+    	} else {
+    		if (texte == ""){
+    			$("#contour").css("background-color", red);
+    			alert("Vous devez écrire des mots pour la dictée");
+
+    		} else {
+    			ordre = localStorage.getItem("order");
+    			texte =  ordre + "\n" + texte;
+    			localStorage.setItem(name,texte);
+    			localStorage.setItem("dic",texte);
+    			localStorage.setItem("name",name);
+    			$("#contour").css("background-color", green);
+    			if (ordre == "aleatoire"){
+    				texteaffiche = texte.substr(10);
+    			} else {
+    				texteaffiche = texte.substr(6);
+    			}
+    			alert("La dictée " + name + " a été enregistrée ! Avec pour mots : \n" + texteaffiche);
+    			$("#letxte").text(texte);
+    			(document.getElementById('dictee').value = "");
+    			(document.getElementById('taille').value = "");
+    			(document.getElementById('namedictee').value = "");
+    		}
+    		
+    	}
+    	
+    };
+    $("#validerdictee").on("click", validerdictee);
+ </script>
+	
+ </body>

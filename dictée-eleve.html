@@ -1,0 +1,215 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+     <link rel="icon" href="images/Icon.png" />
+    <title>Dictée Romane</title>
+    <style type="text/css">
+    </style>
+ </head>
+ <body>
+ 	<a href="Index.html"><img src="images/retour.png" width="200"></a><span class="gauche" id="charger_nom"><img src="images/charger_nom.png" width="200" onclick="javascript:charger();" style="cursor: pointer;"></span></a></span><span><TEXTAREA name="dictee" id="charger_texte"  style="FONT-SIZE: 30pt; WIDTH: 700px; height:60px; FONT-FAMILY: Arial" rows=20 cols=150></TEXTAREA></span><span class="gauche" id = "finish"><img src="images/finir_la_dictée.png" onclick="javascript:finirdictee();" style="cursor: pointer;" width="200px"></span>
+  <script src="js/jquery-3.3.1.min.js"></script>
+ <style>
+  .box {
+  	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  	border-radius: 2px;
+  	border: 1px solid #666;
+  	background-color:#fff;
+  	margin: 1%;
+  	padding:1%;
+  }
+  .question {font-size:4em;}
+  .questionpose{visibility: hidden; font-size: 0px;}
+  .mauvaisereponse{visibility: hidden; font-size: 0px;}
+  .bonnereponse{visibility: hidden; font-size: 0px;}
+  .nb{color:#f00;font-weight:bold;}
+  .reponse{color:#633;font-size:5em;margin-right:10px;margin-bottom:10px; min-width:1.3em;}
+  
+  input[type=range].range::-webkit-slider-runnable-track {
+	width: 100%;
+  	height: 8px;
+  	cursor: pointer;
+  	box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  	background: #3071a9;
+  	border-radius: 1.3px;
+  	border: 0.2px solid #010101;
+  }
+  input[type=range]::-webkit-slider-thumb {
+  	margin-top: -4px;
+  }
+ </style>
+
+ </head>
+
+ <body style="background-color:#ddd">
+  <div style="height:100%;width:100%;text-align:center;">
+   <div class="box question">
+    Écris ce qui est dicté: <input id="lire" type='button' style="font-size:70%" value='🔊' />
+   </div>
+   
+   	<div class="box" style="margin-top:50px" id="choix">
+      <TEXTAREA name="dictee" id="dictee"  style="FONT-SIZE: 30pt; color: #303E46 ; WIDTH: 700px; FONT-FAMILY: cursive; resize: none;" rows=1 cols=60></TEXTAREA> <span><input id="validertexte" type='button' style="font-size:200%" value='✅'/></span>
+   	</div>
+   	<div style="font-size:1em;margin-top:50px">
+   		Bonnes réponses / Essais / Total :<br>
+   		<span id="nb_bonnes_rep">0</span> / <span id="nb_rep">0</span> / <span id="total">0</span>
+   	    (<span id="pourcent">0</span>%)
+   	</div>
+    <div class="box questionpose">
+    Écris  <span class="mot" id="mots"></span></span>
+   </div>
+   <div class="box questionpose">
+    <p class="mot" id="thedictee"></p>
+    </div>
+   <div class="box mauvaisereponse">
+    <span class="mot" id="mrate"></span></span>
+   </div>
+   <div class="box bonnereponse">
+    <span class="mot" id="mreussie"></span></span>
+   </div>
+  
+  <script type="text/javascript">
+  $("#finish").css("display","none");
+  var finirdictee = function(){
+    window.location.reload();
+  }
+  var ordre;
+  var motrate;
+  var motreussi;
+  var question;
+  var mots = [];
+  var rate = [];
+  var reussi = [];
+  var i;
+  var length2;
+  var length1;
+  var charger = function(){
+    nb_rep = 0;
+    $("#nb_rep").text(nb_rep);
+    nb_bonnes_rep = 0;
+    $("#nb_bonnes_rep").text(nb_bonnes_rep);
+    $("#pourcent").text(0);
+    quelle = (document.getElementById("charger_texte").value);
+    dictee = localStorage.getItem(quelle);
+     if (dictee == null){
+      alert("La dictée " + quelle + " est inexistante ou n'a pu être chargée.");
+      (document.getElementById('charger_texte').value = "");
+       $("#charger_texte").focus()
+    } else {
+    nouveau = dictee.split('\n');
+    ordre = nouveau[0];
+    if (ordre == "aleatoire"){
+            texteaffiche = dictee.substr(10);
+          } else {
+            texteaffiche = dictee.substr(6);
+      }
+    $("#charger_texte").css("display","none");
+    $("#charger_nom").css("display","none");
+    (document.getElementById("charger_texte").value = "");
+    i = 0;
+    mots = texteaffiche.split("\n");
+    total = mots.length;
+    $("#total").text(total);
+    if (length2 == mots.length){
+      length1 = 0;
+    } else {
+      length1 = mots.length;
+    }
+    length2 = mots.length;
+    rate = ['Bien essayé mais non ! ', 'Tu tes trompé ! ', 'Ah non ! ','Non, recommence'];
+    reussi = ['bravo !', 'cest ça !',' tu as reussi !', 'super'];
+  synth = window.speechSynthesis;
+  
+	var speak = function(text) {
+ 	 	synth.speak(new SpeechSynthesisUtterance(text));
+    $("#dictee").focus()
+	};
+  var effacer =  function(){
+     document.getElementById("dictee").value="";
+     
+};
+  var corec = function() {
+    color = "#ff0000"
+    $("#dictee").css("color",color);
+  }
+ 	var run = function() {
+    color = "#303E46";
+    $("#dictee").css("color",color);
+    if (ordre == "aleatoire"){
+       question = mots[Math.floor(Math.random()* mots.length)];
+       index = mots.indexOf(question);
+    } else {
+      question = mots[i];
+      index = mots.indexOf(question);
+      
+    }
+    if (mots.length == 0){
+      effacer();
+      nb_bonnes_rep = (document.getElementById('nb_bonnes_rep').firstChild.data);
+      nb_rep = (document.getElementById('nb_rep').firstChild.data);
+      speak("Dictée terminée. Tu as répondu correctement à : " + nb_bonnes_rep + "mot sur " + total + " mots en faisant " + nb_rep + " essais");
+      $("#finish").show();
+    } else {
+      if (length1 == length2){
+        speakok  = "ok";
+        length1 = 0;
+      }
+    mots.splice(index, 1);
+    motrate = rate[Math.floor(Math.random()* rate.length)];
+    motreussi = reussi[Math.floor(Math.random()* reussi.length)];
+ 		$("#mots").text(question);
+    $("#mrate").text(motrate);
+    $("#mreussie").text(motreussi);
+    if (speakok == "ok"){
+    speak($(".questionpose").text());
+    speakok = "unok";
+  }
+ 		$("#lire").click();
+  }
+   
+    
+ 	};
+
+  run();
+
+    var post_actions = function () {
+		var nb_rep = parseInt($("#nb_rep").text(), 10) + 1;
+    $("#nb_rep").text(nb_rep);
+    $("#pourcent").text(Math.floor($("#nb_bonnes_rep").text()*100 / nb_rep));
+ 	};
+
+
+ 	$("#lire").on("click", function() {
+ 		speak($(".questionpose").text());
+ 	});
+$("#validertexte").on("click", function() {
+
+    reponse = (document.getElementById('dictee').value);
+	if (reponse != ""){
+   		var question = document.getElementById('mots').firstChild.data ;
+      	var motrate = document.getElementById('mrate').firstChild.data ;
+      	var motreussi = document.getElementById('mreussie').firstChild.data ;
+      	if (reponse == question) {
+        		speak(motreussi);
+        		$("#nb_bonnes_rep").text(parseInt($("#nb_bonnes_rep").text(), 10)+1);
+        		post_actions();
+        		run();
+        		effacer();
+        		$("#dictee").focus()
+    		} else {
+        		speak(motrate  + reponse + ",n'est pas la réponse. Essaie encore ! Tu dois écrire : " + question);
+        		var motrate = rate[Math.floor(Math.random()* rate.length)];
+        		$("#mrate").text(motrate);
+        		post_actions();
+        		corec();
+        		$("#dictee").focus()
+    		}
+	}
+    
+  });
+}
+}
+  </script>
+ </body>
+ </html>
+ </body>

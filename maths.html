@@ -3,6 +3,7 @@
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>Maths Romane</title>
+  <link rel="icon" href="images/Icon.png" />
   <style>
     .box {
   	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
@@ -56,7 +57,7 @@
  </head>
 
  <body style="background-color:#ddd;font-family:Arial;">
-  <a href="index.html" style="font-size:6em;color:black;text-decoration:none">⬅</a>
+  <a href="Index.html"><img src="images/retour.png" width="200"></a>
   <div style="height:100%;width:100%;text-align:center;">
    <div class="box question">
     Combien font <span class="nb" id="n1"></span>&nbsp;+&nbsp;<span class="nb" id="n2"></span> ? <input id="lire" type='button' style="font-size:50%" value='🔊' />
@@ -146,18 +147,21 @@ var collector_anim = function(phase, collector, rewards, index) {
                                   $("#rewards").text("Finished !");
                               } else {
                                   $(".box").show();
+								  post_actions();
+								  run();
                               }
                           });
     }
 };
 
 var bonne_reponse = function () {
-    var good_jobs = ["Bonne réponse !",
-                     "Super !",
-                     "Oui, bravo !",
-                     "Eh oui, tu as raison !"];
+    var good_jobs =
+	 ["Bonne réponse !",
+      "Super !",
+      "Oui, bravo !",
+      "Eh oui, tu as raison !"];
     var nb_bonnes_rep = parseInt($("#nb_bonnes_rep").text(), 10) + 1;
-    var rep_idx = Math.floor(Math.random() * good_jobs.length + 1);
+    var rep_idx = Math.floor(Math.random() * good_jobs.length);
     speak(good_jobs[rep_idx]);
     $("#nb_bonnes_rep").text(nb_bonnes_rep);
     if (((nb_bonnes_rep % 4) == 0) && (nb_bonnes_rep > 0)) {
@@ -173,9 +177,10 @@ var bonne_reponse = function () {
             '<img class="reward" src="images/themes/' + theme +
             '/reward.png" alt="recompense">';
         $("#rewards").append(reward);
+		post_actions();
+        run();
     }
-    post_actions();
-    run();
+    
 };
 
 $("#lire").on("click", function() {

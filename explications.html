@@ -1,0 +1,116 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+     <link rel="icon" href="images/Icon.png" />
+    <title>Manuel</title>
+    <style type="text/css">
+    body {
+  	  background-color : #6C5B4F;
+	  padding : 0;
+	  margin : 0;
+	  font-family: "Trebuchet MS";
+	  color: grey;
+
+}
+  .box {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    border-radius: 2px;
+    border: 1px solid #666;
+    background-color:#fff;
+    margin: 1%;
+    padding:1%;
+  }
+   .icon:hover {
+	  opacity: 0.5;
+   }
+    #rewards {
+        font-size: 30px;
+        font-weight: 800;
+        text-shadow: 2px 2px #333;
+        color: #FF851B;
+        text-align:center;
+        vertical-align:middle;
+    }
+    #gros {
+        font-size: 30px;
+    }
+   input[type=range]::-webkit-slider-runnable-track{
+        height: 8px;
+    cursor: pointer;
+    background: #3071a9;
+    }
+    input[type=range]::-moz-range-track {
+        height: 8px;
+    cursor: pointer;
+    background: #3071a9;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+    margin-top: -5px;
+    }
+    input[type=range]::-moz-range-thumb {
+        margin-top: -5px;
+    }
+    </style>
+ </head>
+ <body>
+  <a href="Index.html" class="icon"><img src="images/retour.png" width="200"></a>
+  <div class="box" >
+    <h1>Comment utiliser le programme de Maths</h1>
+    <h2>1) Bonnes réponses / total / essais</h2>
+   Les résultats se situent juste au dessus de la barre pour changer la difficulté (voir plus bas).
+   <h3>Les bonnes réponses :</h3>
+    Le nombre de bonnes réponses que l'élève a données.
+    <h3>Total :</h3>
+   Le nombre d'additions qu'il y a dans le cycle.
+   <h3>Essais :</h3>
+   Le nombre de tentatives que l'élève a faites.
+    <h2>2) La dificulté : </h2>
+    Pour changer la difficulté , il suffit de bouger la petite barre en bas de l'écran comme celle ci :
+    <div> Difficulté : 2 <input class="range" type="range" min="2" max="10" id="max" value="5"> 10 </div>
+    à 2 la difficulté est faible et à 10 élevé. La valeur sélectionnée permet de spécifier la valeur maximum de chaque tirage aléatoire de nombre.<br>
+    <b> &#9888; La difficulté change aussi le nombre total d'additions dans le cycle.</b> (8 pour la difficulté 2 et 40 pour la difficulté 10)
+    <h2>3) Les récompenses : </h2>
+    Les glands apparaissent toutes <b>les bonnes réponses</b> <img src="images/reward.png" width="50px"><br>
+    Et les Totoro tous <b>les multiples de 4. </b> (Au passage il prend les glands sur son chemin. D'où le sac) <img src="images/themes/totoro/collector.gif" width="50px"><br>
+    Tandis que le gros Totoro apparait seulement <b>à la fin de la dictée</b> <img src="images/themes/totoro/lastcollector.gif" width="50px"><br>
+    <h2>4) La fin d'un cycle : </h2>
+    Un cycle se termine lorque le nombre de bonnes réponses est égal au nombre "total". (<span id="rewards"> Finished !</span> sera écrit.)
+    <h2>5) Pour l'élève </h2>
+    Il doit cliquer sur le bouton où la réponse de l'addition lui semble correcte (logique).<br>
+    <p></p>
+    S'il se trompe le programme lui dira si la réponse est supérieure ou inférieure à son choix.<br>
+    <p></p>
+    S'il trouve la bonne réponse alors l'élève gagne un gland et ainsi de suite (voir la partie récompenses).<br>
+    <p></p>
+    si l'élève n'entend pas la question ou a besoin de réentendre, il lui suffit de cliquer sur le <span id="gros">🔊</span>.
+  </div>
+  <div class="box" >
+    <h1>Comment utiliser le programme de Dictée</h1>
+    <h2>Les parties 1, 4 et 5 sont identiques au programme de Math</h2>
+    Sauf que l'élève doit écrire les réponses et ne gagne pas de gland ni de Totoro.
+    <h2>1) Créer / charger / éditer  une dictée</h2>
+    <h3>Créer une dictée</h3>
+    Le programme permet en premier lieu de créer autant de dictées que vous voulez.<br>
+    Pour cela allez dans la partie professeur dans le menu (à gauche du bouton manuel).<br>
+    Ensuite il suffit de suivre les instructions du document.
+    <h3>Charger une dictée</h3>
+    Maintenant, vous voulez que l'élève se fasse dicter votre dictée ? Rien de plus simple !<br>
+    Allez dans la partie dictée (pour l'élève), et écrivez dans la zone de texte <b>le nom</b> de votre dictée. Ensuite cliquez sur ce bouton : <img src="images/charger_nom.png" width="200px"><br>
+    Et voilà !
+    <h3>Éditer une dictée</h3>
+    Vous avez créé une dictée mais vous voulez ajouter des mots ou des phrases à l'intérieur de celle ci ? 
+    Allez dans la partie professeur, et vous pouvez voir 2 boutons.
+    <img src="images/charger.png" width="200px">
+    <img src="images/charger_nom.png" width="200px"><br>
+    Le premier bouton vous permet de charger la dernière dictée créée pour la modifier.<br>
+    Si votre dictée n'est pas la dernière que vous avez créée, il vous suffit de marquer dans la zone de texte un peu plus à droite le nom de la dictée et d'appuyer sur le second bouton.<br>
+    Vous pourrez la modifier sans aucun problème<br>
+    <b> &#9888; Si vous enregistez 2 dictée sous le même nom alors seulement la dernière sera retenue.</b>
+  </div>
+
+ </body>
+ <script type="text/javascript">
+ 	
+ </script>
+</html>
